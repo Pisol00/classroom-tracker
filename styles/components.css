@@ -1323,3 +1323,197 @@ body.modal-open {
   .pct-warn { background: rgba(239,159,39,.2); color: #f5c47d; }
   .pct-bad  { background: rgba(226,75,74,.2); color: #f5a5a5; }
 }
+
+/* === RESPONSIVE BREAKPOINTS === */
+
+@media (max-width: 768px) {
+  .modal {
+    width: 100%;
+  }
+
+  .modal-wide {
+    width: 100%;
+  }
+
+  .modal-header {
+    padding: 1.1rem 1.3rem .9rem;
+  }
+
+  .modal-header h3 {
+    font-size: 15.5px;
+  }
+
+  .modal-body {
+    padding: .25rem 1.3rem 1rem;
+    max-height: 65vh;
+  }
+
+  .modal-footer {
+    padding: .85rem 1.3rem 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .btn-ghost,
+  .modal-footer .btn-primary,
+  .modal-footer .btn-danger {
+    flex: 1 1 auto;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .pill {
+    padding: 7px 12px;
+    font-size: 12.5px;
+  }
+
+  .pill-wrap.active .pill {
+    padding-right: 30px;
+  }
+
+  .pill-add {
+    padding: 6px 11px;
+    font-size: 12px;
+  }
+
+  .att-btn {
+    padding: 6px 10px;
+    font-size: 11.5px;
+  }
+
+  .att-btn i {
+    font-size: 13px;
+  }
+
+  .hw-list {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+
+  .hw-card {
+    padding: 12px 14px;
+  }
+
+  .hw-title {
+    font-size: 13px;
+  }
+
+  .hw-meta {
+    font-size: 11px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .toast {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+    font-size: 12.5px;
+  }
+
+  .stat-pill {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .import-sheet-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+
+  .import-preview-wrap {
+    max-height: 280px;
+  }
+
+  .form-grid {
+    gap: 10px;
+  }
+
+  .cal-pop {
+    width: 260px;
+    padding: 12px;
+  }
+
+  .cal-day {
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .login-card {
+    padding: 36px 28px 32px;
+  }
+
+  .login-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .login-title {
+    font-size: 19px;
+  }
+
+  .login-sub {
+    font-size: 12.5px;
+  }
+
+  .user-badge {
+    font-size: 12px;
+    padding: 5px 5px 5px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .att-radio {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .att-btn {
+    padding: 6px 9px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .att-btn span,
+  .att-btn {
+    /* Show icon-only on tightest screens */
+  }
+
+  .pill {
+    font-size: 12px;
+    padding: 6px 11px;
+  }
+
+  .pill-wrap.active .pill {
+    padding-right: 28px;
+  }
+
+  .modal-header {
+    padding: 1rem 1.1rem .8rem;
+  }
+
+  .modal-body {
+    padding: .25rem 1.1rem .9rem;
+  }
+
+  .modal-footer {
+    padding: .8rem 1.1rem 1.1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hw-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .score-input {
+    width: 56px;
+    padding: 5px 8px;
+  }
+
+  .stat-pill b {
+    font-size: 12px;
+  }
+}

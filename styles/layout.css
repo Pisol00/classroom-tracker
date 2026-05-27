@@ -281,14 +281,94 @@ tbody tr:hover {
 
 /* === RESPONSIVE === */
 
+@media (max-width: 768px) {
+  .topbar {
+    margin-bottom: 1rem;
+  }
+
+  .brand-title {
+    font-size: 18px;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+  }
+
+  .tabs-nav {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .tab {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-size: 12.5px;
+  }
+
+  .tab-actions {
+    gap: 8px;
+  }
+
+  .actions-right {
+    gap: 6px;
+  }
+
+  .selectors {
+    padding: 12px 14px;
+  }
+}
+
 @media (max-width: 640px) {
   thead th,
   tbody td {
-    padding: 12px 14px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  thead th {
+    font-size: 10px;
   }
 
   tbody td::after {
-    left: 14px;
-    right: 14px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .tab i {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tab-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions-right {
+    flex-wrap: wrap;
+  }
+
+  .actions-right > button {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  thead th,
+  tbody td {
+    padding: 8px 10px;
   }
 }
