@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบเช็คชื่อ-การบ้าน</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+  <!-- ── หน้าเข้าสู่ระบบ ── -->
+  <div class="login-overlay app-hidden" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+      <div class="login-title">ระบบเช็คชื่อ-การบ้าน</div>
+      <div class="login-sub">เข้าสู่ระบบด้วยบัญชี Google เพื่อใช้งาน</div>
+      <div id="gisBtn"></div>
+    </div>
+  </div>
+
+  <!-- ── แอปหลัก ── -->
+  <div class="container app-hidden" id="app">
+
+    <!-- แถบด้านบน -->
+    <div class="topbar">
+      <div>
+        <div class="brand-title">
+          <span class="brand-icon"><i class="ti ti-school" aria-hidden="true"></i></span>
+          ระบบเช็คชื่อ-การบ้าน
+        </div>
+        <div class="brand-sub">บันทึกการเข้าเรียน การส่งงาน และข้อมูลนักเรียน</div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-badge" id="userBadge"></div>
+      </div>
+    </div>
+
+    <!-- ตัวเลือกห้อง / วิชา -->
+    <div class="selectors">
+      <div class="selector-row">
+        <div class="selector-label">ห้อง</div>
+        <div class="pill-group" id="classSelector"></div>
+        <div class="selector-sep"></div>
+        <div class="selector-label">วิชา</div>
+        <div class="pill-group" id="subjectSelector"></div>
+      </div>
+    </div>
+
+    <!-- แท็บ -->
+    <nav class="tabs-nav" id="tabsNav"></nav>
+
+    <!-- ── แท็บ 1: นักเรียน ── -->
+    <section class="tab-panel active" data-panel="students">
+      <div class="tab-actions">
+        <span class="tbl-count" id="studentsCount">0 คน</span>
+        <div class="actions-right">
+          <button class="btn-ghost btn-ghost-danger" type="button" id="btnDeleteAllStudents">
+            <i class="ti ti-trash" aria-hidden="true"></i> ลบทั้งหมด
+          </button>
+          <button class="btn-ghost" type="button" id="btnImport">
+            <i class="ti ti-file-import" aria-hidden="true"></i> นำเข้าจาก Excel
+          </button>
+          <button class="btn-add" type="button" id="btnAddStudent">
+            <i class="ti ti-plus" aria-hidden="true"></i> เพิ่มนักเรียน
+          </button>
+        </div>
+      </div>
+
+      <div class="tbl-card">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="th-center" style="width:60px">ที่</th>
+                <th class="th-center" style="width:90px">รหัส</th>
+                <th style="width:280px">ชื่อ-สกุล</th>
+                <th style="width:110px">วันเกิด</th>
+                <th class="th-center" style="width:60px">เพศ</th>
+                <th class="th-center" style="width:110px">เข้าเรียน %</th>
+                <th class="th-center" style="width:110px">ส่งงาน %</th>
+                <th class="th-center" style="width:64px">—</th>
+              </tr>
+            </thead>
+            <tbody id="studentsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── แท็บ 2: เช็คชื่อ ── -->
+    <section class="tab-panel" data-panel="attendance">
+      <div class="tab-actions">
+        <button type="button" class="dd-toggle date-toggle" id="attendanceDateBtn">เลือกวันที่</button>
+        <div class="actions-right">
+          <button class="btn-ghost" type="button" id="btnMarkAllPresent">
+            <i class="ti ti-checks" aria-hidden="true"></i> ทำเครื่องหมายมาทุกคน
+          </button>
+        </div>
+      </div>
+
+      <div class="attendance-stats" id="attendanceStats"></div>
+
+      <div class="tbl-card">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="th-center" style="width:60px">ที่</th>
+                <th class="th-center" style="width:90px">รหัส</th>
+                <th>ชื่อ-สกุล</th>
+                <th style="width:380px">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── แท็บ 3: การบ้าน ── -->
+    <section class="tab-panel" data-panel="homework">
+      <div class="tab-actions">
+        <span class="tbl-count">รายการการบ้าน</span>
+        <div class="actions-right">
+          <button class="btn-add" type="button" id="btnAddHomework">
+            <i class="ti ti-plus" aria-hidden="true"></i> เพิ่มการบ้าน
+          </button>
+        </div>
+      </div>
+
+      <div class="hw-list" id="homeworkList"></div>
+
+      <div class="hw-score-section hidden" id="homeworkScoreSection">
+        <div class="tab-actions">
+          <span class="tbl-count" id="homeworkScoreTitle"></span>
+          <div class="actions-right">
+            <button class="btn-ghost" type="button" id="btnDeleteHomework">
+              <i class="ti ti-trash" aria-hidden="true"></i> ลบ
+            </button>
+          </div>
+        </div>
+
+        <div class="tbl-card">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="th-center" style="width:60px">ที่</th>
+                  <th class="th-center" style="width:90px">รหัส</th>
+                  <th>ชื่อ-สกุล</th>
+                  <th class="th-center" style="width:120px">ส่งงาน</th>
+                  <th class="th-center" style="width:180px">คะแนน</th>
+                </tr>
+              </thead>
+              <tbody id="homeworkScoreBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Modal นำเข้า ── -->
+  <input type="file" id="importFileInput" accept=".xlsx,.xls" hidden>
+  <div class="modal-overlay" id="importModal">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+      <div class="modal-header">
+        <h3 id="importModalTitle">นำเข้านักเรียนจาก Excel</h3>
+        <button class="modal-close" type="button" id="importCancel" aria-label="ปิด">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="importSheetPicker"></div>
+        <div class="import-summary" id="importPreviewSummary"></div>
+        <div class="import-preview-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="th-center" style="width:80px">ห้อง</th>
+                <th class="th-center" style="width:60px">ที่</th>
+                <th class="th-center" style="width:90px">เลขประจำตัว</th>
+                <th>ชื่อ-สกุล</th>
+                <th class="th-center" style="width:110px">วันเกิด</th>
+                <th class="th-center" style="width:60px">เพศ</th>
+                <th class="th-center" style="width:70px">สถานะ</th>
+              </tr>
+            </thead>
+            <tbody id="importPreviewBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" id="importTemplate">
+          <i class="ti ti-download" aria-hidden="true"></i> ดาวน์โหลดเทมเพลต
+        </button>
+        <span style="flex:1"></span>
+        <button class="btn-ghost" type="button" id="importCancel2">ยกเลิก</button>
+        <button class="btn-primary" type="button" id="importConfirmBtn">นำเข้า</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal ยืนยัน (generic confirm) ── -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal modal-confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmModalTitle" aria-describedby="confirmModalMessage">
+      <div class="modal-header">
+        <h3 id="confirmModalTitle">ยืนยันการทำรายการ</h3>
+        <button class="modal-close" type="button" id="confirmModalCloseX" aria-label="ปิด">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="confirm-body">
+          <div class="confirm-icon" id="confirmModalIcon"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+          <p id="confirmModalMessage"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" id="confirmModalCancel">ยกเลิก</button>
+        <button class="btn-danger" type="button" id="confirmModalOk">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal เพิ่มห้อง ── -->
+  <div class="modal-overlay" id="classModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="classModalTitle">
+      <div class="modal-header">
+        <h3 id="classModalTitle">เพิ่มห้องเรียน</h3>
+        <button class="modal-close" type="button" id="classModalCloseX" aria-label="ปิด">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="fg fg-full">
+            <label for="class_name">ชื่อห้องเรียน</label>
+            <input id="class_name" type="text" placeholder="เช่น ม.4/1">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" id="classModalCancel">ยกเลิก</button>
+        <button class="btn-primary" type="button" id="classModalSave">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal เพิ่มวิชา ── -->
+  <div class="modal-overlay" id="subjectModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="subjectModalTitle">
+      <div class="modal-header">
+        <h3 id="subjectModalTitle">เพิ่มวิชา</h3>
+        <button class="modal-close" type="button" id="subjectModalCloseX" aria-label="ปิด">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="fg fg-full">
+            <label for="subject_name">ชื่อวิชา</label>
+            <input id="subject_name" type="text" placeholder="เช่น คณิตศาสตร์">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" id="subjectModalCancel">ยกเลิก</button>
+        <button class="btn-primary" type="button" id="subjectModalSave">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Modal เพิ่มการบ้าน ── -->
+  <div class="modal-overlay" id="homeworkModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="hwModalTitle">
+      <div class="modal-header">
+        <h3 id="hwModalTitle">เพิ่มการบ้านใหม่</h3>
+        <button class="modal-close" type="button" id="hwModalCancelX" aria-label="ปิด">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="fg fg-full">
+            <label for="hw_title">ชื่อการบ้าน</label>
+            <input id="hw_title" type="text" placeholder="เช่น แบบฝึกหัดบทที่ 1">
+          </div>
+          <div class="fg">
+            <label>วันที่</label>
+            <button type="button" class="dd-toggle date-toggle" id="hw_date_btn">เลือกวันที่</button>
+            <input id="hw_date" type="hidden">
+          </div>
+          <div class="fg">
+            <label for="hw_maxScore">คะแนนเต็ม</label>
+            <input id="hw_maxScore" type="number" min="0" step="1" value="10">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" type="button" id="hwModalCancel">ยกเลิก</button>
+        <button class="btn-primary" type="button" id="hwModalSave">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

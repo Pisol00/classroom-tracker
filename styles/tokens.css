@@ -1,0 +1,83 @@
+/* === DESIGN TOKENS === */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Background */
+  --page:   #ece8df;
+  --page-2: #e4dfd2;
+  --page-3: #f1ede4;
+  --page-hover: #e6e0d0;
+
+  /* Surfaces */
+  --surface:        rgba(255, 253, 247, .62);
+  --surface-strong: rgba(255, 253, 247, .78);
+  --surface-inset:  rgba(255, 253, 247, .42);
+  --surface-solid:  #fffdf7;
+
+  /* Inputs */
+  --input-bg:       #f3efe5;
+  --input-bg-focus: #ece8db;
+
+  /* Text */
+  --text:  #26221b;
+  --text2: #736d62;
+  --text3: #9c9588;
+
+  /* Borders */
+  --line:        rgba(60, 50, 35, .09);
+  --line-2:      rgba(60, 50, 35, .14);
+  --line-strong: rgba(60, 50, 35, .22);
+
+  /* Border radii */
+  --radius:    10px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 0 rgba(255, 255, 255, .55) inset,
+               0 1px 2px rgba(60, 50, 35, .04);
+  --shadow:    0 1px 0 rgba(255, 255, 255, .55) inset,
+               0 8px 24px -12px rgba(60, 50, 35, .18);
+  --shadow-lg: 0 1px 0 rgba(255, 255, 255, .6) inset,
+               0 24px 60px -20px rgba(60, 50, 35, .28);
+}
+
+/* === DARK MODE OVERRIDES === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page:   #1c1916;
+    --page-2: #161310;
+    --page-3: #23201c;
+    --page-hover: #3a342c;
+
+    --surface:        rgba(48, 42, 35, .55);
+    --surface-strong: rgba(54, 48, 40, .72);
+    --surface-inset:  rgba(40, 35, 29, .55);
+    --surface-solid:  #2a2620;
+
+    --input-bg:       #23201c;
+    --input-bg-focus: #2a2620;
+
+    --text:  #f0ece2;
+    --text2: #a89f8e;
+    --text3: #736b5c;
+
+    --line:        rgba(255, 245, 225, .07);
+    --line-2:      rgba(255, 245, 225, .11);
+    --line-strong: rgba(255, 245, 225, .2);
+
+    --shadow-sm: 0 1px 0 rgba(255, 250, 235, .04) inset,
+                 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow:    0 1px 0 rgba(255, 250, 235, .04) inset,
+                 0 8px 24px -12px rgba(0, 0, 0, .5);
+    --shadow-lg: 0 1px 0 rgba(255, 250, 235, .05) inset,
+                 0 24px 60px -20px rgba(0, 0, 0, .7);
+  }
+}
